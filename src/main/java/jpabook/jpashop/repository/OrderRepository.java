@@ -28,22 +28,22 @@ public class OrderRepository {
 
     public List<Order> findAll(OrderSearch orderSearch) {
 // JPQL
-//        return em.createQuery("select o from Order o join o.member m" +
-//                        " where o.status = :status" +
-//                        "   and m.name like :name", Order.class)
-//                .setParameter("status", orderSearch.getOrderStatus())
-//                .setParameter("name", orderSearch.getMemberName())
-//                .setMaxResults(1000) // 최대 1000건
-//                .getResultList();
+        return em.createQuery("select o from Order o join o.member m" +
+                        " where o.status = :status" +
+                        "   and m.name like :name", Order.class)
+                .setParameter("status", orderSearch.getOrderStatus())
+                .setParameter("name", orderSearch.getMemberName())
+                .setMaxResults(1000) // 최대 1000건
+                .getResultList();
 
         // JPQL 쿼리를 문자로 생성하기는 번거롭고, 실수로 인한 버그가 충분히 발생할 수 있음.
-//        return findAllByJPQL(orderSearch);
+//        return findAllByString(orderSearch);
         // JPA 표준 스펙이지만 실무에서 사용하기에 너무 복잡함.
-        return findAllByJPACriteria(orderSearch);
+//        return findAllByCriteria(orderSearch);
         // 가장 멋진 해결책은 Querydsl이 제시했으며, Querydsl 소개장에서 간단히 언급 예정.
     }
 
-    private List<Order> findAllByJPACriteria(OrderSearch orderSearch) {
+    public List<Order> findAllByString(OrderSearch orderSearch) {
         CriteriaBuilder cb = em.getCriteriaBuilder();
         CriteriaQuery<Order> cq = cb.createQuery(Order.class);
         Root<Order> o = cq.from(Order.class);
@@ -67,7 +67,7 @@ public class OrderRepository {
         return query.getResultList();
     }
 
-    private List<Order> findAllByJPQL(OrderSearch orderSearch) {
+    public List<Order> findAllByCriteria(OrderSearch orderSearch) {
         // language=JPAQL
         String jpql = "select o From Order o join o.member m";
         boolean isFirstCondition = true;
